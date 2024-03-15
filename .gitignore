@@ -1,0 +1,5 @@
+#git ignore for django project
+*.pyc
+*.pyo
+*.db
+*.sqlite3
