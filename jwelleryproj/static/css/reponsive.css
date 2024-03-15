@@ -1,0 +1,62 @@
+
+/* ===================================================== */
+/* needed */
+/* ====================================================== */
+
+@media(max-width:575px) {
+    /* Custom CSS */
+    h1 {
+        font-size: 1.25rem;
+    }
+
+    h2 {
+        font-size: 1rem;
+        line-height: 1rem;
+        margin-bottom: 5px;
+    }
+    .main-btn {
+        height: 20px;
+        line-height: 20px;
+        font-size: 0.9375rem;
+    }  
+    .main-btn::after {
+        transform: translateY(0.9375rem);
+        -webkit-transform: translateY(0.9375rem);
+    } 
+    .main-btn::before {
+        transform: translateY(-0.9375rem);
+        -webkit-transform: translateY(-0.9375rem);
+    }
+      /* navbar brand */
+      .navigation-wrap .navbar-brand img{
+        height: 2.13rem;;
+        width: auto;
+    }
+    .navbar-toggler i{
+        color:var(--white-color);
+        line-height: 2;
+    }
+
+    /* Banner Design */
+      #home{
+          padding:3.800rem 0 0;
+      } 
+
+    /* top banner */
+    #home .carousel-caption {
+        top:0.4rem;
+    }
+     
+    #home .carousel-caption p {
+        margin:5px auto;
+    }
+    .navbar{
+        background-image: linear-gradient(20deg, #000000, #737373)
+    }
+     
+    .top-header{
+        display:none;
+    }
+    
+} 
+

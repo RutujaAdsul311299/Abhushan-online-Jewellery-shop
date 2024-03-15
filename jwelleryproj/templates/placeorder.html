@@ -1,0 +1,97 @@
+{% extends "base.html" %} {% load static %} {% block main %}
+<div class="pt-5 bg-dark text-white">
+  <div class="container row py-5 mx-auto">
+
+    <div class="col-md-9">
+      <h2>Delivery Information</h1>
+        <hr  className="p-0 m-0"/>
+        <div class="row bg-dark shadow my-3">
+          <div class="col-md-12">
+
+            <h3>Add Address</h3>
+          <form  method="post"action="{% url 'add_address' %}">
+                {% csrf_token %}
+                <div class="form-group mb-2">
+                  <label for="phone_number" class='text-small mb-1'>Phone Number *</label>
+                  <input type="phone" pattern="[0-9]{10}" title="Please Enter 10 digit Phone Number" maxlength="10" minlength="10"
+                  
+                  class="form-control" id="phone_number" name="phone_number" placeholder="Please Enter Your Phone Number" required>
+                </div>
+
+                <div class="form-group mb-2">
+                  <label for="address" class='text-small mb-1'>Address *</label>
+                  <textarea class="form-control" id="address" name="address" placeholder="Please Enter Your Address"
+                  required></textarea>
+                </div>
+                  
+                  <button type="submit" class="btn btn-primary ">Add Address</button>
+            </form>
+          </div>
+        </div>
+        <hr class="p-0 m-0" />
+
+        {% comment %} if address is not already added for that conditions are checked {% endcomment %}
+        <div class='row bg-dark shadow mb-2 p-3'>
+          <h3>Address</p>
+            {% comment %} if address is not added then show the message to add address {% endcomment %}
+            {%if address|length == 0 %}  
+            <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
+              <p class='m-0 p-0'>No Address Found</p>
+              <p class='m-0 p-0'>Please Add Address</p>
+            </div>
+            {% endif %}
+            {% comment %} if address is added then show the address on the page {% endcomment %}
+            {% if address|length > 0 %}
+            <form class="row" method="post" action="{% url 'place_order' %}">
+              {% csrf_token %}
+              {% for i in address %}
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-auto">
+                  <input  type="radio" id="{{i.id}}" name="address" value="{{i.id}}" required>
+                  </div>
+                  <label for="{{i.id}}" class="col">
+                    <dl class="w-100 grid grid-cols-auto_1fr gap-x-2">
+                    <dt class='small'>Name </dt>
+                    <dd>{{i.user.username}}</dd>
+                    <dt class='small'>Phone Number</dt>
+                    <dd>{{i.phone_number}}</dd>
+                    <dt class='small'>Address</dt>
+                    <dd>{{i.address}}</dd>
+                  </dl>
+                </label>
+                </div>
+              </div>
+              {% endfor %}
+              <hr />
+              <div class="col-md-12">
+                <!-- make payments -->
+                <button type="submit" class="btn btn-primary">Make Payment</button>
+              </div>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="p-3 shadow bg-dark mb-2">
+            <h3>Order Summary</h3>
+            <div class="row">
+              <div class="col-md-6">
+                <p>Subtotal</p>
+                {% comment %} <p>Shipping</p>
+                <p>Total</p> {% endcomment %}
+              </div>
+              <div class="col-md-6">
+                <p>{{subtotal}}</p>
+                {% comment %} <p>{{shipping}}</p>
+                <p>{{total}}</p> {% endcomment %}
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+        
+  </div>
+  
+</div>
+{% endblock main %}

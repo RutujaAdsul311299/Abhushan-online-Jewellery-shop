@@ -1,0 +1,131 @@
+{% extends "base.html" %} {% load static %} {% block main %}
+<div class="pt-5 bg-dark text-white">
+  <div class="container py-5 mx-auto">
+    <div class="row">
+      <div class="col-9 px-2">
+        <h1>Your Shopping Cart</h1>
+        {% if items %}
+          <div class="d-flex justify-content-between p-3 shadow-lg bg-dark rounded">
+            <h2>Items in your cart ({{items|length}})</h2>
+            <form action="{% url 'remove_from_cart' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary">
+                Remove all items
+              </button>
+            </form>
+          </div>
+          <div class="row px-2">
+          {% for i in items %}
+          <div class="row border shadow-lg bg-dark rounded p-3 mb-3">
+            <div class="col-md-3">
+              <img
+                src="{{ i.product__image.url }}"
+                alt="product"
+                class="img-fluid"
+              />
+            </div>
+            <div class="col-md-3">
+              <h3>{{i.product__name}}</h3>
+              <p>{{i.product__product_details}}</p>
+            </div>
+            <div class="col-md-3">
+              {% comment %} Remove From Cart {% endcomment %}
+              <form action="{% url 'remove_from_cart'%}" method="post">
+                {% csrf_token %}
+
+                <input
+                  type="hidden"
+                  name="product_id"
+                  value="{{ i.product__id }}"
+                />
+                <button type="submit" class="btn btn-primary">
+                  Remove From Cart
+                </button>
+              </form>
+            </div>
+            <div class="col-md-3">
+              <h3>Price</h3>
+              <div class="d-flex space-1 gap-2">
+                <p>{{i.product__price}}</p>
+                
+                x {% comment %} add more to cart button {% endcomment %}
+                <form action="{% url 'add_to_cart' %}" method="post">
+                  {% csrf_token %}
+                  <input
+                    type="hidden"
+                    name="prod_id"
+                    value="{{i.product__id }}"
+                  />
+                  <input type="submit" value="+" class="btn btn-primary" />
+                  <input type="hidden" value="/cart" name="redirect_path" />
+                </form>
+
+                <p>{{i.quantity}}</p>
+
+                {% comment %} remove from cart button {% endcomment %}
+                <form action="{% url 'remove_from_cart' %}" method="post">
+                  {% csrf_token %}
+                  <input
+                    type="hidden"
+                    name="product_id"
+                    value="{{i.product__id }}"
+                  />
+                  <input type="hidden" name="quantity" value="1" />
+                  <input type="submit" value="-" class="btn btn-primary" />
+                  <input type="hidden" value="/cart" name="redirect_path" />
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endfor %} 
+        </div>
+
+          </div>
+          {% endif %} 
+          
+          {% if not items %}
+          <p>Your cart is empty</p>
+          <button class="btn btn-primary">
+            <a href="{% url 'home' %}" class="text-white">Go to home</a>
+          </button>
+          {% endif %}
+        <div class="col-3 shadow-lg p-3 bg-dark rounded">
+          {% if items %}
+          <div>
+            <h3
+            class="text-large"
+            >Order Summary</h3>
+            <hr />
+            {% for i in items %}
+            <div class="row text-center mb-1">
+                <div class='col-3'>
+                  {{i.quantity}}
+                  </div>
+                  <div class="col-3">
+                    x
+                    </div>
+                  <div class="col-3">
+                    {{i.product__price}}
+                    =
+                    </div>
+                    <div class="col-3">
+                      {{i.total}}
+                      </div>
+            </div>
+            {% endfor %}
+            <hr />
+            </div>
+            <div class='d-flex col-12 justify-content-between align-items-baseline'>
+              <p>Total Amount : {{total}}</p>
+              <button class="btn btn-primary">
+                <a href="/placeorder" class="text-white">Place order </a>
+              </button>
+              </div>
+          
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock main %}
+</div>

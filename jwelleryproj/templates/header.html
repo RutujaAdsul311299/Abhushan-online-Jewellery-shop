@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Jewellary Shop</title>
+    <!-- Bootsrap link of css -->
+    <link rel="stylesheet" href='{% static "css/bootstrap.min.css" %}' />
+    <!-- own css file -->
+    <link rel="stylesheet" href='{% static "css/style.css" %}' />
+    <link rel="stylesheet" href='{% static "css/reponsive.css" %}' />
+    <!-- font link -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+  </head>
+
+  <body data-bs-spy="scroll" data-bs-target=".navbar">
+    <!-- header design -->
+    <header>
+      <div class="top-header">
+        <div
+          class="container d-flex justify-content-between align-items-center py-3"
+        >
+          <span>Free shipping for orders over </span>
+          <span>Call: 800-6688-999</span>
+        </div>
+      </div>
+
+      <!-- Navbar started -->
+      <nav class="navbar navbar-expand-lg navigation-wrap">
+        <div class="container">
+          <a
+            class="navbar-brand"
+            style="font-family: Roboto, sans-serif"
+            href="/"
+          > 
+            <h3 style="font-family: Mickle;">ABHUSHAN</h3>
+            {% comment %} <p>Adornments of celestial beauty</p> {% endcomment %}
+            
+          </a> 
+          <button  
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <!-- <span class="navbar-toggler-icon"></span> -->
+            <i class="fas fa stream navbar-toggler-icon"></i>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="container">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/"
+                    >Home</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#newarrivals">New Arrivals</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#products">Products</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#deal">Deal of the day</a>
+                </li>
+              </ul>
+            </div>
+            <div class="header-social d-flex align-items-center">
+              
+              <input  class="form-control bg-transparent searchbar_input"
+                type="text"
+                list="search"
+                id="searchinput"
+                placeholder="Search"
+                aria-label="Search"
+                aria-describedby="basic-addon1"
+              />
+              <datalist id="search"> </datalist>
+
+              <a href="/cart" class="position-relative">
+                {% if cart_count %}
+                <span
+                  class="position-absolute bottom-100 end-0 badge rounded-pill bg-danger"
+                >
+                  {{cart_count}}
+                </span>
+                {% endif %}
+                <i class="bi bi-cart-fill fa-6x text-white m-0"></i
+              ></a>
+
+              {% if is_logged_in %}
+
+              <a href="/logout"
+                ><i class="bi bi-box-arrow-right fa-6x text-white m-0"></i>
+              </a>
+              {% else %}
+              <a href="/login"
+                ><i class="fas fa-user fa-6x text-white m-0"></i
+              ></a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  </body>
+
+  <script>
+    const list = document.getElementById("search");
+    const input = document.getElementById("searchinput");
+    let timer = null;
+
+    input.addEventListener("input", function () {
+      var search = document.getElementById("searchinput").value;
+      //clear the list before api call and also add loading and also add debouncer
+      timer && clearTimeout(timer);
+      timer = setTimeout(() => {
+        list.innerHTML = "";
+        const option = document.createElement("option");
+        option.value = "Loading...";
+        list.appendChild(option);
+
+        //call api to search the product using fetch function
+        fetch(`/search?search=${search}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+
+            //replace the options in the datalist
+            list.innerHTML = "";
+            data.forEach((element) => {
+              const option = document.createElement("option");
+              option.value = element.name;
+              list.appendChild(option);
+            });
+            //when selected redirect to the id of the product page
+            input.removeEventListener("change", function () {});
+            input.addEventListener("change", function (e) {
+              console.log(e.target.value); //this is the selected value
+              const selected = data.find(
+                (element) => element.name === e.target.value
+              );
+              console.log(selected);
+              window.location.href = `/products/${selected.id}`;
+            });
+          });
+      }, 1000);
+    });
+  </script>
+</html>
