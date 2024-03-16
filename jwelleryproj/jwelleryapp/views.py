@@ -298,7 +298,7 @@ def show_payment(request, payment):  # function for show payment details
         payment_info = Order.objects.get(orderid=payment)  # get payment details from order table using payment id
         context = {}
         context['payment_info'] = payment_info
-
+        print(payment_info, "payment_info")
         return render(request, 'pay.html', context)
     else:
         return redirect('/login')
@@ -348,7 +348,7 @@ def make_payment(items, user, address):  # function for payment     # items is t
         payment = client.order.create(data=data)
         print(payment, "Meowwwwwwwwwww")
         # generate order in orders table
-        order = Order(orderid=payment['id'], userid=user, address=address, amt=sum, paymentstatus='created')
+        order = Order(orderid=payment['id'], userid=user, address=address, amt=sum, paymentstatus='created') # orderid is the payment id 
 
         if order is None:
             return "Error enable to create order"
@@ -372,7 +372,6 @@ def make_payment(items, user, address):  # function for payment     # items is t
 def payment_callback(request):
     if request.method == 'POST':
         print(request.POST, "tannnngggyyyy")
-        # <QueryDict: {'razorpay_payment_id': ['pay_NlxlyJTA32vqaR']}> tannnngggyyyy
         payment_id = request.POST['razorpay_payment_id']
         # fetch payment information
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
@@ -385,10 +384,18 @@ def payment_callback(request):
         order = Order.objects.get(orderid=payment['order_id'])
         order.paymentstatus = payment['status']
         order.save()
+            
         # send mail to user for payment success
-        send_mail('Abhushan Jewellery Payment Success', 'Your payment is successfull', 'rutuja.adsul31@gmail.com', [order.userid.email])
+        user = order.userid
+        #converting model object to dictionary
+        # order=order.__dict__
 
-        context={"order_id ":order.orderid,"amount":payment['amount'],"status":payment['status']}
+        payment['amount']=payment['amount']/100
+        message = f"Dear {user.username},\n\nThank you for your payment. Your payment of {payment['amount']} INR has been successfully processed.\n\nWe appreciate your business and look forward to serving you again.\n\nBest regards,\nThe Abhushan Jewellery Team"
+        subject = 'Abhushan Jewellery Payment Success'
+        send_mail(subject, message, 'rutuja.adsul31@gmail.com', [user.email])
+        context={"amount":payment['amount'],"status":payment['status']}
+
         return render(request, 'paymentsuccess.html',context)
     else:
         return HttpResponse('failure')

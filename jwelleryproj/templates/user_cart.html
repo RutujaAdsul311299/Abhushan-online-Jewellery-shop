@@ -17,9 +17,9 @@
           <div class="row px-2">
           {% for i in items %}
           <div class="row border shadow-lg bg-dark rounded p-3 mb-3">
-            <div class="col-md-3">
+            <div class="col-md-3
               <img
-                src="{{ i.product__image.url }}"
+                src="{{MEDIA_URL}}{{ i.product__p_img }}"
                 alt="product"
                 class="img-fluid"
               />

@@ -1,20 +1,27 @@
- {% load static %} {% block main %}
-<div class="container bg-black">
-  <div class="row">
+{% extends "base.html" %}{% load static %} {% block main %}
+<div class="container py-5 bg-dark">
+  <div class="row bg-dark">
     <div class="col-md-12">
       <h1 class="text-center">Payment Successful</h1>
+      <table class="table table-bordered">
+        <tr>
+{#          <th>Order ID:</th>#}
+{#          <td><p> {{ order_id }} </p></td>#}
+        </tr>
+        <tr>
+          <th>Amount Paid:</th>
+          <td>Rs - {{ amount }}</td>
+        </tr>
+      </table>
       <p class="text-center">Thank you for your payment!</p>
       <p class="text-center">Your order has been successfully processed.</p>
-      <p class="text-center">Order ID: {{ order_id }}</p>
-      <p class="text-center">Amount Paid: ${{ amount }}</p>
     </div>
   </div>
 </div>
-    <script>
-    {#redirect in 5 seconds#}
-    setTimeout(function() {
-      window.location.href = "{% url 'home' %}";
-    }, 5000);
-
-    </script>
+<script>
+  {#redirect in 5 seconds#}
+  setTimeout(function() {
+    window.location.href = "{% url 'home' %}";
+  }, 5000);
+</script>
 {% endblock main %}

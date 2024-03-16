@@ -74,6 +74,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+
             ],
         },
     },
@@ -134,7 +137,9 @@ STATIC_DIR=os.path.join(BASE_DIR,'static')
 print("My project dir==",STATIC_DIR)
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 STATICFILES_DIRS=[STATIC_DIR]
+
 print("static url",STATICFILES_DIRS)
 
 # Default primary key field type
@@ -142,7 +147,7 @@ print("static url",STATICFILES_DIRS)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 RAZORPAY_KEY_ID = 'rzp_test_Uq1fBCVHjAwvXw'
