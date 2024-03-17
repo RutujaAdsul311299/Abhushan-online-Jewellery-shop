@@ -8,6 +8,7 @@ from django.http import JsonResponse  # for json response
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+
 from .models import Address
 from .models import Jproduct
 from .models import Order
@@ -19,7 +20,6 @@ from .models import UserCart
 def home(request):
     context = {}
     context = handle_nav(request, context)
-    print(context, "rutuja")
     return render(request, "index.html", context)
 
 
@@ -65,7 +65,6 @@ def add_to_cart(request):
                 cart.save()
 
             if redirect_path:
-                print(redirect_path, "helooooooooooooooooooo")
                 return redirect(redirect_path)
             else:
                 return redirect('products/' + id)
@@ -144,7 +143,6 @@ def product_detail(request, id):
     else:
         context['is_logged_in'] = False
     context = handle_nav(request, context)
-    print(context)
     return render(request, 'product_details.html', context)
 
 
@@ -174,14 +172,12 @@ def user_cart(request):
     else:
         return redirect('/login')
     context = handle_nav(request, context)
-    print(context, "tanu")
     return render(request, "user_cart.html", context)
 
 
 def remove_from_cart(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
-            print(request.POST, "adyaaaaaaaaaaaaaa")
             user = request.user
             method = ""
 
@@ -192,7 +188,6 @@ def remove_from_cart(request):
                 # fetch product from database
                 product = Jproduct.objects.get(id=product_id)
                 quantity = request.POST['quantity'][0]
-                print(product_id, quantity, "tanuuuuuuuuuuuuuuu")
                 handle_remove(product, user)
 
             elif 'product_id' in request.POST:  # if only product id is present then remove product
@@ -222,12 +217,11 @@ def handle_remove_product(product_id, user):  # function for remove product full
 
 def handle_remove(product, user):  # function for remove product from cart quatity wise
     cart = UserCart.objects.filter(user=user, product=product, order_id=None)
-    print(product, user, "tangiiiiii")
     if cart:
         cart = cart[0]
         if int(cart.quantity) > 1:  # if quantity is greater than 1 then decrease quantity
             cart.quantity -= 1
-            print(cart.quantity, "pandiiii")
+            print(cart.quantity)
             cart.total -= cart.product.price
             cart.save()
         else:
@@ -346,7 +340,6 @@ def make_payment(items, user, address):  # function for payment     # items is t
     try:
 
         payment = client.order.create(data=data)
-        print(payment, "Meowwwwwwwwwww")
         # generate order in orders table
         order = Order(orderid=payment['id'], userid=user, address=address, amt=sum, paymentstatus='created') # orderid is the payment id 
 
@@ -371,15 +364,12 @@ def make_payment(items, user, address):  # function for payment     # items is t
 @csrf_exempt
 def payment_callback(request):
     if request.method == 'POST':
-        print(request.POST, "tannnngggyyyy")
         payment_id = request.POST['razorpay_payment_id']
         # fetch payment information
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
         payment = client.payment.fetch(payment_id)
         if payment is None:
             return HttpResponse('failure')
-
-        print(payment, "pandaaaaaaa")
         # update payment status in order table
         order = Order.objects.get(orderid=payment['order_id'])
         order.paymentstatus = payment['status']
@@ -391,12 +381,16 @@ def payment_callback(request):
         # order=order.__dict__
 
         payment['amount']=payment['amount']/100
+        #for email template
         message = f"Dear {user.username},\n\nThank you for your payment. Your payment of {payment['amount']} INR has been successfully processed.\n\nWe appreciate your business and look forward to serving you again.\n\nBest regards,\nThe Abhushan Jewellery Team"
         subject = 'Abhushan Jewellery Payment Success'
         send_mail(subject, message, 'rutuja.adsul31@gmail.com', [user.email])
+        
         context={"amount":payment['amount'],"status":payment['status']}
-
         return render(request, 'paymentsuccess.html',context)
     else:
         return HttpResponse('failure')
 
+
+
+     

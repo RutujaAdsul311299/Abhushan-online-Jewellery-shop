@@ -1,14 +1,10 @@
 {% extends "base.html" %}{% load static %} {% block main %}
-<div class="container py-5 bg-dark">
+<div class="container  py-5 bg-dark">
   <div class="row bg-dark">
     <div class="col-md-12">
       <h1 class="text-center">Payment Successful</h1>
       <table class="table table-bordered">
-        <tr>
-{#          <th>Order ID:</th>#}
-{#          <td><p> {{ order_id }} </p></td>#}
-        </tr>
-        <tr>
+        <tr class="bg-dark text-white">
           <th>Amount Paid:</th>
           <td>Rs - {{ amount }}</td>
         </tr>
