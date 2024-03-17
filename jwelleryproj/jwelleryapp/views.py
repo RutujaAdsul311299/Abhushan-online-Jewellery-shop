@@ -14,6 +14,9 @@ from .models import Jproduct
 from .models import Order
 from .models import UserCart
 
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+
 
 # Create your views here.
 
@@ -377,20 +380,29 @@ def payment_callback(request):
             
         # send mail to user for payment success
         user = order.userid
-        #converting model object to dictionary
-        # order=order.__dict__
+        payment['amount'] = payment['amount'] / 100
 
-        payment['amount']=payment['amount']/100
-        #for email template
-        message = f"Dear {user.username},\n\nThank you for your payment. Your payment of {payment['amount']} INR has been successfully processed.\n\nWe appreciate your business and look forward to serving you again.\n\nBest regards,\nThe Abhushan Jewellery Team"
+        context = {
+            "username": user.first_name,
+            "amount": payment['amount'],
+        }
+        message = mark_safe(render_to_string('email.html', context))
         subject = 'Abhushan Jewellery Payment Success'
-        send_mail(subject, message, 'rutuja.adsul31@gmail.com', [user.email])
-        
-        context={"amount":payment['amount'],"status":payment['status']}
+        send_mail(subject, message, 'rutuja.adsul31@gmail.com', [user.email], html_message=message)
+
+        context={"amount":payment['amount'],"status":payment['status'],"date":order.order_date, "orderid":order.orderid}
         return render(request, 'paymentsuccess.html',context)
     else:
         return HttpResponse('failure')
 
 
 
+ # user = order.userid
+        #converting model object to dictionary
+        # order=order.__dict__
+        # payment['amount']=payment['amount']/100
+        #for email template
+        # message = f"Dear {user.username},\n\nThank you for your payment. Your payment of {payment['amount']} INR has been successfully processed.\n\nWe appreciate your business and look forward to serving you again.\n\nBest regards,\nThe Abhushan Jewellery Team"
+        # subject = 'Abhushan Jewellery Payment Success'
+        # send_mail(subject, message, 'rutuja.adsul31@gmail.com', [user.email])
      

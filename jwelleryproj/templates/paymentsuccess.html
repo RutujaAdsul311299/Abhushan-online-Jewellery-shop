@@ -1,12 +1,33 @@
-{% extends "base.html" %}{% load static %} {% block main %}
-<div class="container  py-5 bg-dark">
+{% extends "base.html" %}{% load static %} 
+{% block main %}
+<head>
+    <style>
+        body {
+            background-color: #000; /* This will make the background color dark */
+            color: #fff; /* This will make the text color white */
+        }
+    </style>
+</head>
+<div class="container py-5 bg-dark">
   <div class="row bg-dark">
     <div class="col-md-12">
       <h1 class="text-center">Payment Successful</h1>
-      <table class="table table-bordered">
+      <table class="table table-bordered bg-dark">
+          <tr class="bg-dark text-white">
+          <th>Order Id:</th>
+          <td> {{ orderid }}</td>
+        </tr>
+          <tr class="bg-dark text-white">
+          <th>Payment date:</th>
+          <td>{{ date }}</td>
+        </tr>
         <tr class="bg-dark text-white">
           <th>Amount Paid:</th>
           <td>Rs - {{ amount }}</td>
+        </tr>
+          <tr class="bg-dark text-white">
+          <th>Payment status:</th>
+          <td>{{ status }}</td>
         </tr>
       </table>
       <p class="text-center">Thank you for your payment!</p>
